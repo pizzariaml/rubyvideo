@@ -1,24 +1,26 @@
-<nav class="navbar">
-  <ul>
-    <li>
-      <%= link_to root_path, class: "text-white flex gap-4 items-center" do %>
-        <title>Ruby Video</title>
-      <% end %>
-    </li>
-  </ul>
-  <ul class="hidden md:flex">
-    <%= render "shared/navbar/link", link_title: "Talks", path: talks_path %>
-    <%= render "shared/navbar/link", link_title: "Speakers", path: speakers_path %>
-    <% if Current.user&.admin? %>
-      <%= render "shared/navbar/link", link_title: "Events", path: events_path %>
+<%= cache [request.path, Current.user&.admin?] do %>
+  <nav class="navbar">
+    <ul>
+      <li>
+        <%= link_to root_path, class: "text-white flex gap-4 items-center" do %>
+          <title>Ruby Video</title>
+        <% end %>
+      </li>
+    </ul>
+    <ul class="hidden md:flex">
+      <%= render "shared/navbar/link", link_title: "Talks", path: talks_path %>
+      <%= render "shared/navbar/link", link_title: "Speakers", path: speakers_path %>
+      <% if Current.user&.admin? %>
+        <%= render "shared/navbar/link", link_title: "Events", path: events_path %>
 
-      <%= render "shared/navbar/link", link_title: "Suggestions", path: admin_suggestions_path %>
-    <% end %>
-    <li>
-      <%= link_to "https://github.com/adrienpoly/rubyvideo", target: "_blank", alt: "github repository for the Ruby video project" do %>
-        <%= icon "github", size: :lg %>
+        <%= render "shared/navbar/link", link_title: "Suggestions", path: admin_suggestions_path %>
       <% end %>
-    </li>
-    <li><a href="https://github.com/adrienpoly/rubyvideo/blob/main/docs/contributing.md" role="button" target="_blank">Contribute</a></li>
-  </ul>
-</nav>
+      <li>
+        <%= link_to "https://github.com/adrienpoly/rubyvideo", target: "_blank", alt: "github repository for the Ruby video project" do %>
+          <%= icon "github", size: :lg %>
+        <% end %>
+      </li>
+      <li><a href="https://github.com/adrienpoly/rubyvideo/blob/main/docs/contributing.md" role="button" target="_blank">Contribute</a></li>
+    </ul>
+  </nav>
+<% end %>
