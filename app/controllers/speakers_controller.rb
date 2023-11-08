@@ -14,6 +14,7 @@ class SpeakersController < ApplicationController
         @pagy, @speakers = pagy(Speaker.all.order(:name), {items: params[:per_page]})
       end
     end
+    fresh_when(@speakers)
   end
 
   # GET /speakers/1
@@ -21,7 +22,7 @@ class SpeakersController < ApplicationController
     @talks = @speaker.talks
     @back_path = speakers_path
     set_meta_tags(@speaker)
-    # fresh_when(@speaker)
+    fresh_when(@speaker)
   end
 
   # GET /speakers/1/edit
