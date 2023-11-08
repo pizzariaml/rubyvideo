@@ -12,6 +12,7 @@ class TalksController < ApplicationController
     else
       @pagy, @talks = pagy(Talk.all.order(date: :desc).includes(:speakers, :event), items: 9, page: session[:talks_page]&.to_i || 1)
     end
+    fresh_when(@talks)
   end
 
   # GET /talks/1
@@ -19,6 +20,7 @@ class TalksController < ApplicationController
     speaker_slug = params[:speaker_slug]
     @back_path = speaker_slug.present? ? speaker_path(speaker_slug, page: session[:talks_page]) : talks_path(page: session[:talks_page])
     set_meta_tags(@talk)
+    fresh_when(@talk)
   end
 
   # GET /talks/1/edit
