@@ -10,7 +10,9 @@
         all
       <% end %>
   </div>
-  <div id="speakers" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 lg:gap-x-12 gap-y-2 min-w-full">
-      <%= render @speakers %>
-  </div>
+  <% cache @speakers do %>
+    <div id="speakers" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 lg:gap-x-12 gap-y-2 min-w-full">
+        <%= render @speakers, cache: true %>
+    </div>
+  <% end %>
 </div>
