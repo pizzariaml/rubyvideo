@@ -82,6 +82,7 @@ group :development do
   gem "standardrb", "~> 1.0", require: false
   gem "erb_lint", require: false
   gem "authentication-zero", "~> 2.16", require: false
+  gem "next_gen_images", require: false
 end
 
 group :test do
