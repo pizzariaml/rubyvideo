@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+
+# Set relative paths based on the script location
+APP_ROOT=$(dirname "$(dirname "$0")")
+DB_PATH="$APP_ROOT/storage/development_rubyvideo.sqlite3"
+BACKUP_PATH="$APP_ROOT/storage/development_rubyvideo_backup_$(date +%Y%m%d%H%M%S).sqlite3"
+NEW_DB_PATH="$APP_ROOT/storage/development_rubyvideo_new.sqlite3"
+DUMP_FILE="$APP_ROOT/storage/dump.sql"
+
+# Step 1: Backup the corrupted database
+echo "Creating a backup of the original database at $BACKUP_PATH..."
+cp "$DB_PATH" "$BACKUP_PATH"
+
+# Step 2: Dump the database contents
+echo "Dumping the database to $DUMP_FILE..."
+sqlite3 "$DB_PATH" <<EOF
+.output $DUMP_FILE
+.mode insert
+.dump
+EOF
+
+# Step 3: Create a new database and import the dump
+echo "Creating a new database and importing the dump..."
+sqlite3 "$NEW_DB_PATH" <<EOF
+.read $DUMP_FILE
+EOF
+
+# Step 4: Check integrity of the new database
+echo "Checking the integrity of the new database..."
+INTEGRITY=$(sqlite3 "$NEW_DB_PATH" "PRAGMA integrity_check;")
+
+if [ "$INTEGRITY" == "ok" ]; then
+  echo "Integrity check passed. Replacing the old database with the new one..."
+  mv "$NEW_DB_PATH" "$DB_PATH"
+  echo "Database repair completed successfully."
+else
+  echo "Integrity check failed: $INTEGRITY"
+  echo "The original database remains untouched. Investigate further."
+  rm "$NEW_DB_PATH"
+fi
+
+# Cleanup
+echo "Cleaning up dump file..."
+rm "$DUMP_FILE"
+
+echo "Process finished."
